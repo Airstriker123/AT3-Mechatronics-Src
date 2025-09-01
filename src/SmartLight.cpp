@@ -2,21 +2,29 @@
 #include <Arduino.h>
 #include <print.h>
 
-namespace SmartLight
-{
+namespace SmartLight {
     class SmartLight
     {
 
     public:
 
+        //class public variables to declare type
+        bool LEDLight;
+        double LightLevel;
+        bool Light;
+        bool Motion;
 
-        bool LEDLight = false;
-        double LightLevel = 0;
-        bool Light = false;
-        bool Motion = false;
+        SmartLight() //constructor
+        {
+            //predefine variables
+            LEDLight = false;
+            LightLevel = 0.0;
+            Light = false;
+            Motion = false;
+        }
 
 
-        static bool LightSensor()
+         bool LightSensor()
         /*
 BEGIN LightSensor
     \\ process to request light from sensor and determine if light is on or off
@@ -39,7 +47,7 @@ END PhotoResistor
 
         }
 
-        static bool MotionSensor()
+         bool MotionSensor()
         /*
 BEGIN MotionSensor
     \\ process to perform motion check
@@ -62,7 +70,7 @@ END MotionSensor
             return false;
         }
 
-        void setup()
+        static void setup()
         {
             // write your initialization code here
 
@@ -96,20 +104,20 @@ END setup
              */
             Serial.println("initializing SmartLight setup!");
             try //prevent any crash if error occurs in selection
-                {
+            {
                 if (MotionSensor() == true)
                     Serial.println("Motion Sensor is on!");
                 else
                     Serial.println("Motion Sensor is off");
             }
             catch (...) //catch any error
-                {
+            {
                 Serial.println("An error occured!");
                 Serial.println("Motion Sensor NOT detected ");
             }
         }
 
-        void loop()
+       static void loop()
         /*
 \\ process to perform real time checks if any change in environment
 BRGIN loop
