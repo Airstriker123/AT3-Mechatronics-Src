@@ -70,8 +70,8 @@ END MotionSensor
             return false;
         }
 
-        static void setup()
-        {
+         void setup()
+
             // write your initialization code here
 
             /*
@@ -102,6 +102,7 @@ BEGIN setup
      RETURN StartSmartLight
 END setup
              */
+        {
             Serial.println("initializing SmartLight setup!");
             try //prevent any crash if error occurs in selection
             {
@@ -117,7 +118,7 @@ END setup
             }
         }
 
-       static void loop()
+        void loop()
         /*
 \\ process to perform real time checks if any change in environment
 BRGIN loop
