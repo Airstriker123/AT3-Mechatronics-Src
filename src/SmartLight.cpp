@@ -35,6 +35,8 @@ namespace SmartLight
             Motion = false;
             Motionstate = 0;
             // Declare and initialize the state variable
+            this->LightSensor();
+            this->MotionSensor();
         }
 
 
@@ -56,7 +58,6 @@ END LightSensor
 */
         {
             try {
-                Serial.begin(9600);
                 if (const int LightLevel = analogRead(PhotoResistorpin); LightLevel > 150){
                     // condition for light detection
                     Serial.print("Sensor is detecting light!");
@@ -97,8 +98,8 @@ END MotionSensor
                     Serial.print("Motion is detecting motion!");
                     return Motion = true; //flag for deciding if light should be on/off
                 }
-                return Motion = false; //flag for deciding if light should be on/off
                 Serial.println("Monitoring...");
+                return Motion = false; //flag for deciding if light should be on/off
             } catch (...) { //incase sensor fails to notify me to fix it!
                 Serial.println("Motion Sensor could not be detected");
                 return MotionSensorStateOn = false; //flag for deciding if smartlight should proceed
@@ -135,6 +136,8 @@ BEGIN setup
 END setup
 */
         {
+            LightSensor();
+            MotionSensor();
             pinMode(LedPin, OUTPUT); //led location (readjust if needed)
             pinMode(MotionSensorPin, INPUT);  // Set the PIR pin as an input
             Serial.begin(9600);
@@ -177,7 +180,10 @@ BEGIN loop
 END Loop
 */
         {
+
             if (StartSmartLight == true) { //only start if sensors work
+                Light = LightSensor();
+                Motion = MotionSensor();
                 if (Light == true && Motion == true ) { //check if both sensors are detecting
                     //turn light on if they are
                     Serial.println("LED light on!");
