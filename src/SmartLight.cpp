@@ -35,8 +35,6 @@ namespace SmartLight
             Motion = false;
             Motionstate = 0;
             // Declare and initialize the state variable
-            this->LightSensor();
-            this->MotionSensor();
         }
 
 
@@ -202,8 +200,8 @@ END Loop
 SmartLight::SmartLight SmartLightSystem;
 //outside of namespace for same method
 //for compiling method
-void setup(){SmartLightSystem.setup();};
-void loop(){SmartLightSystem.loop();};
+auto setup() -> void {SmartLightSystem.setup();};
+auto loop() -> void {SmartLightSystem.loop();};
 
 
 
