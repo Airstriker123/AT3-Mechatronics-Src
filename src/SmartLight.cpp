@@ -59,12 +59,12 @@ END LightSensor
                 Serial.begin(9600);
                 if (const int LightLevel = analogRead(PhotoResistorpin); LightLevel > 150){
                     // condition for light detection
-                    return Light = true;
                     Serial.print("Sensor is detecting light!");
+                    return Light = true;
                 }
                 // if not above 150 return no light detected
-                return Light = false;
                 Serial.print("Sensor is not detecting light");
+                return Light = false;
                 // Wait for 1 second before the next loop iteration
                 delay(1000);
             }
@@ -96,14 +96,14 @@ END MotionSensor
                 delay(1000);
                 Motionstate = digitalRead(MotionSensorPin);         // Read the state of the PIR sensor
                 if (Motionstate == HIGH) {                 // If the PIR sensor detects movement (state = HIGH)
-                    return Motion = true; //flag for deciding if light should be on/off
                     Serial.print("Motion is detecting motion!");
+                    return Motion = true; //flag for deciding if light should be on/off
                 }
                 return Motion = false; //flag for deciding if light should be on/off
                 Serial.println("Monitoring...");
             } catch (...) { //incase sensor fails to notify me to fix it!
-                return MotionSensorStateOn = false; //flag for deciding if smartlight should proceed
                 Serial.println("Motion Sensor could not be detected");
+                return MotionSensorStateOn = false; //flag for deciding if smartlight should proceed
             }
             return Motion = false; //flag for deciding if light should be on/off
         }
