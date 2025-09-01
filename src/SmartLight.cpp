@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <Arduino.h> //platformio lib
 
 namespace SmartLight
 {
@@ -21,7 +21,7 @@ namespace SmartLight
         int Motionstate; //define pin = 0
 
 
-        SmartLight() //constructor
+        SmartLight() //constructor __init__ in python
         //sensor pins
             : PhotoResistorpin(A1), MotionSensorPin(A1) {
             //predefine variables
@@ -193,6 +193,11 @@ END Loop
     };
 };
 
+SmartLight::SmartLight SmartLightSystem;
+//outside of namespace for same method
+//for compiling method
+void setup(){SmartLightSystem.setup();};
+void loop(){SmartLightSystem.loop();};
 
 
 
