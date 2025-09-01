@@ -28,18 +28,17 @@ namespace SmartLight
             Motion = false;
             Motionstate = 0;
             // Declare and initialize the state variable
-
         }
 
 
-         bool LightSensor()
+        bool LightSensor()
         /*
 
 */
         {
-            try {Serial.begin(9600);
-                int LightLevel = analogRead(PhotoResistorpin);
-                if (LightLevel > 150){
+            try {
+                Serial.begin(9600);
+                if (const int LightLevel = analogRead(PhotoResistorpin); LightLevel > 150){
                     // condition for light detection
                     return Light = true;
                     Serial.print("Sensor is detecting light!");
@@ -54,6 +53,7 @@ namespace SmartLight
                 // incase sensor fails to notify me to fix it!
                 Serial.println("Light Sensor could not be detected");
             }
+            return Light = false;
         }
 
           bool MotionSensor()
@@ -73,6 +73,7 @@ namespace SmartLight
             } catch (...) { //incase sensor fails to notify me to fix it!
                 Serial.println("Motion Sensor could not be detected");
             }
+            return Motion = false;
         }
 
          void setup()
