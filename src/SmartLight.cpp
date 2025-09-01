@@ -14,6 +14,9 @@ namespace SmartLight
         double LightLevel;
         bool Light;
         bool Motion;
+        bool MotionSensorStateOn;
+        bool LightSensorStateOn;
+        bool StartSmartLight;
         const int PhotoResistorpin; //define the pin
         const int MotionSensorPin; //  define the pin
         int Motionstate; //define pin = 0
@@ -22,6 +25,9 @@ namespace SmartLight
         SmartLight() //constructor
         {
             //predefine variables
+            StartSmartLight = false;
+            MotionSensorStateOn = true;
+            LightSensorStateOn = true;
             LEDLight = false;
             LightLevel = 0.0;
             Light = false;
@@ -52,6 +58,7 @@ namespace SmartLight
             catch (...) {
                 // incase sensor fails to notify me to fix it!
                 Serial.println("Light Sensor could not be detected");
+                return LightSensorStateOn = false;
             }
             return Light = false;
         }
@@ -71,57 +78,41 @@ namespace SmartLight
                 return Motion = false;
                 Serial.println("Monitoring...");
             } catch (...) { //incase sensor fails to notify me to fix it!
+                return MotionSensorStateOn = false;
                 Serial.println("Motion Sensor could not be detected");
             }
             return Motion = false;
         }
 
-         void setup()
+         bool setup()
             /*
-BEGIN setup
-     \\ safety checks to check if product sensors are working
-     READ MotionSensorStatus FROM sensor
-     READ LightSensorStatus FROM sensor
 
-     IF MotionSensorStatus = True THEN
-         Sensor1 = True
-         write "Motion sensor detected!"
-     ELSE
-         write "Motion sensor not detected!"
-     ENDIF
-
-     IF LightSensorStatus = True THEN
-         Sensor2 = True
-         write "Light sensor detected!"
-     ELSE
-         write "Light sensor not detected!"
-     ENDIF
-
-     IF Sensor1 AND Sensor2 = True THEN
-         StartSmartLight = True
-         write "Smart Light is now active!"
-     ENDIF
-
-     RETURN StartSmartLight
-END setup
              */
         {
             pinMode(MotionSensorPin, INPUT);  // Set the PIR pin as an input
             Serial.begin(9600);
             Serial.println("initializing SmartLight setup!");
-            try //prevent any crash if error occurs in selection
-            {
-                if (MotionSensor() == true)
-                    Serial.println("Motion Sensor is on!");
-                else
-                    Serial.println("Motion Sensor is off");
+
+            if (MotionSensorStateOn == true) {
+                Serial.println("Motion Sensor is on!");
             }
-            catch (...) //catch any error
-            {
-                Serial.println("An error occured!");
-                Serial.println("Motion Sensor NOT detected ");
+            else {
+                Serial.println("Motion Sensor is off");
+            }
+            if (LightSensorStateOn == true) {
+                Serial.println("Light Sensor is on!");
+            }
+            else {
+                Serial.println("Light Sensor is off");
+            }
+            if (LightSensorStateOn == true && MotionSensorStateOn == true) {
+                Serial.println("All sensors work!");
+                Serial.println("Starting smartlight!");
+                return StartSmartLight = true;
             }
         }
+
+
 
         void loop()
         /*
