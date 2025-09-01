@@ -2,7 +2,8 @@
 #include <Arduino.h>
 #include <print.h>
 
-namespace SmartLight {
+namespace SmartLight
+{
     class SmartLight
     {
 
@@ -13,6 +14,10 @@ namespace SmartLight {
         double LightLevel;
         bool Light;
         bool Motion;
+        const int PhotoResistorpin; //define the pin
+        const int MotionSensorPin; //  define the pin
+        int Motionstate; //define pin = 0
+
 
         SmartLight() //constructor
         {
@@ -21,59 +26,56 @@ namespace SmartLight {
             LightLevel = 0.0;
             Light = false;
             Motion = false;
+            Motionstate = 0;
+            // Declare and initialize the state variable
+
         }
 
 
          bool LightSensor()
         /*
-BEGIN LightSensor
-    \\ process to request light from sensor and determine if light is on or off
-    READ LightLevel FROM sensor  \\ sensor will return light intensity
 
-    \\ determine if to mark as light detected or not to avoid false positive
-    IF LightLevel > 150 THEN
-       Light = True
-       write "Sensor is detecting light!"
-    ELSE
-       Light = False
-       write "No light detected"
-    ENDIF
-
-    RETURN Light
-END PhotoResistor
 */
         {
-            return false;
-
+            try {Serial.begin(9600);
+                int LightLevel = analogRead(PhotoResistorpin);
+                if (LightLevel > 150){
+                    // condition for light detection
+                    return Light = true;
+                    Serial.print("Sensor is detecting light!");
+                }
+                // if not above 150 return no light detected
+                return Light = false;
+                Serial.print("Sensor is not detecting light");
+                // Wait for 1 second before the next loop iteration
+                delay(1000);
+            }
+            catch (...) {
+                // incase sensor fails to notify me to fix it!
+                Serial.println("Light Sensor could not be detected");
+            }
         }
 
-         bool MotionSensor()
+          bool MotionSensor()
         /*
-BEGIN MotionSensor
-    \\ process to perform motion check
-    READ Motion from sensor
-
-    IF Motion THEN
-        Motion = True
-        write "Motion detected!"
-    ELSE
-        Motion = False
-        write "No motion detected"
-    ENDIF
-
-    RETURN Motion
-END MotionSensor
 
          */
-
         {
-            return false;
+            try {
+                delay(1000);
+                Motionstate = digitalRead(MotionSensorPin);         // Read the state of the PIR sensor
+                if (Motionstate == HIGH) {                 // If the PIR sensor detects movement (state = HIGH)
+                    return Motion = true;
+                    Serial.print("Motion is detecting motion!");
+                }
+                return Motion = false;
+                Serial.println("Monitoring...");
+            } catch (...) { //incase sensor fails to notify me to fix it!
+                Serial.println("Motion Sensor could not be detected");
+            }
         }
 
          void setup()
-
-            // write your initialization code here
-
             /*
 BEGIN setup
      \\ safety checks to check if product sensors are working
@@ -103,6 +105,8 @@ BEGIN setup
 END setup
              */
         {
+            pinMode(MotionSensorPin, INPUT);  // Set the PIR pin as an input
+            Serial.begin(9600);
             Serial.println("initializing SmartLight setup!");
             try //prevent any crash if error occurs in selection
             {
@@ -138,8 +142,6 @@ END Loop
         {
             // write your code here
         }
-    private:
-        // private very secret scary data here :0
     };
 };
 
