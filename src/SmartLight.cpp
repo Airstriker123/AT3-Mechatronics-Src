@@ -66,7 +66,6 @@ END LightSensor
                 Serial.print("Sensor is not detecting light");
                 return Light = false;
                 // Wait for 1 second before the next loop iteration
-                delay(1000);
             }
             catch (...) {
                 // incase sensor fails to notify me to fix it!
@@ -93,7 +92,6 @@ END MotionSensor
 */
         {
             try {
-                delay(1000);
                 Motionstate = digitalRead(MotionSensorPin);         // Read the state of the PIR sensor
                 if (Motionstate == HIGH) {                 // If the PIR sensor detects movement (state = HIGH)
                     Serial.print("Motion is detecting motion!");
@@ -190,9 +188,11 @@ END Loop
                     digitalWrite(LedPin, LOW);
                 }
             }
+            delay(1500); // 1.5 second delay
         }
     };
 };
+
 
 
 
