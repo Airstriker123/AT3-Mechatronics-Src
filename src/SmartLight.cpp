@@ -1,4 +1,4 @@
-#include <Arduino.h> //platformio lib
+#include <Arduino.h> //platformio needs this headerfile (for setup and loop pre functions)
 
 namespace SmartLight
 {
