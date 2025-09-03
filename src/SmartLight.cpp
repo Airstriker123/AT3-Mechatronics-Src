@@ -6,7 +6,7 @@ namespace SmartLight
     {
 
     public:
-        
+
         //class public variables to declare type
         bool LEDLight;
         double LightLevel;
@@ -199,10 +199,5 @@ SmartLight::SmartLight SmartLightSystem;
 //outside of namespace for same method
 //for compiling method
 auto setup() -> void {SmartLightSystem.setup();};
+
 auto loop() -> void {SmartLightSystem.loop();};
-
-
-
-
-
-
