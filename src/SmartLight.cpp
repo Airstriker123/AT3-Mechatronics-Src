@@ -11,31 +11,24 @@ namespace SmartLight
         bool LEDLight;
         double LightLevel;
         bool Light;
-        bool Motion;
-        bool MotionSensorStateOn;
         bool LightSensorStateOn;
         bool StartSmartLight;
         int LedPin;
-        const int PhotoResistorpin; //define the pin
-        const int MotionSensorPin; //  define the pin
-        int Motionstate; //define pin = 0
+        const int PhotoResistorPin;
 
 
-        SmartLight() //constructor __init__ in python
-        //sensor pins
-            : PhotoResistorpin(A1), MotionSensorPin(A1) {
-            //predefine variables
-            LedPin = A1;
+        SmartLight()
+           : PhotoResistorPin(A2)
+        {
+            LedPin = D7;
             StartSmartLight = false;
-            MotionSensorStateOn = true;
             LightSensorStateOn = true;
             LEDLight = false;
             LightLevel = 0.0;
             Light = false;
-            Motion = false;
             Motionstate = 0;
-            // Declare and initialize the state variable
         }
+
 
 
         bool LightSensor()
@@ -55,55 +48,17 @@ BEGIN LightSensor
 END LightSensor
 */
         {
-            try { //use exceptions for this block of code incase of error
-                if (const int LightLevel = analogRead(PhotoResistorpin); LightLevel > 150){
-                    // condition for light detection
-                    Serial.print("Sensor is detecting light!");
-                    return Light = true;
-                }
-                // if not above 150 return no light detected
-                Serial.print("Sensor is not detecting light");
+            LightLevel = analogRead(PhotoResistorPin);
+            if (LightLevel > 150) {
+                Serial.println("Sensor is detecting light!");
+                return Light = true;
+            }
+            else {
+                Serial.println("No light detected");
                 return Light = false;
-                // Wait for 1 second before the next loop iteration
             }
-            catch (...) { //catch any error
-                // incase sensor fails to notify me to fix it!
-                Serial.println("Light Sensor could not be detected");
-                return LightSensorStateOn = false; //flag for deciding if smartlight should proceed
-            }
-            return Light = false;
         }
 
-          bool MotionSensor()
-          /*
-BEGIN MotionSensor
-  \\ process to perform motion check
-  READ Motion from sensor
-
-  IF Motion THEN
-      RETURN  Motion = True
-      write "Motion detected!"
-  ELSE
-      RETURN  Motion = False
-      write "No motion detected"
-  ENDIF
-END MotionSensor
-*/
-        {
-            try {
-                Motionstate = digitalRead(MotionSensorPin);         // Read the state of the PIR sensor
-                if (Motionstate == HIGH) {                 // If the PIR sensor detects movement (state = HIGH)
-                    Serial.print("Motion is detecting motion!");
-                    return Motion = true; //flag for deciding if light should be on/off
-                }
-                Serial.println("Monitoring...");
-                return Motion = false; //flag for deciding if light should be on/off
-            } catch (...) { //incase sensor fails to notify me to fix it!
-                Serial.println("Motion Sensor could not be detected");
-                return MotionSensorStateOn = false; //flag for deciding if smartlight should proceed
-            }
-            return Motion = false; //flag for deciding if light should be on/off
-        }
 
          bool setup()
         /*
@@ -134,30 +89,23 @@ BEGIN setup
 END setup
 */
         {
-            LightSensor();
-            MotionSensor();
-            pinMode(LedPin, OUTPUT); //led location (readjust if needed)
-            pinMode(MotionSensorPin, INPUT);  // Set the PIR pin as an input
+            // Serial must start first
             Serial.begin(9600);
-            Serial.println("initializing SmartLight setup!");
+            delay(500); // give serial time to initialize
+            Serial.println("Initializing SmartLight setup!");
 
-            if (MotionSensorStateOn == true) {
-                Serial.println("Motion Sensor is on!");
-            }
-            else {
-                Serial.println("Motion Sensor is off");
-            }
-            if (LightSensorStateOn == true) {
-                Serial.println("Light Sensor is on!");
-            }
-            else {
-                Serial.println("Light Sensor is off");
-            }
-            if (LightSensorStateOn == true && MotionSensorStateOn == true) {
-                Serial.println("All sensors work!");
-                Serial.println("Starting smartlight!");
+            pinMode(LedPin, OUTPUT);
+
+            // Initial sensor checks
+            LightSensor();
+
+
+            if (LightSensorStateOn) {
+                Serial.println("Light Sensor is ON!");
                 return StartSmartLight = true;
             }
+            Serial.println("Light Sensor is OFF");
+            return StartSmartLight = false;
         }
 
         void loop()
@@ -176,21 +124,18 @@ BEGIN loop
 END Loop
 */
         {
-
-            if (StartSmartLight == true) { //only start if sensors work
+            if (StartSmartLight) {
                 Light = LightSensor();
-                Motion = MotionSensor();
-                if (Light == false && Motion == true ) { //check if both sensors are detecting
-                    //turn light on if they are
-                    Serial.println("LED light on!");
+
+                if (Light == false) {
+                    Serial.println("LED ON");
                     digitalWrite(LedPin, HIGH);
-                }
-                else { //turn light off if not
-                    Serial.println("LED light off!");
+                } else {
+                    Serial.println("LED OFF");
                     digitalWrite(LedPin, LOW);
                 }
             }
-            delay(1500); // 1.5 second delay
+            delay(1500);
         }
     };
 };
@@ -198,6 +143,5 @@ END Loop
 SmartLight::SmartLight SmartLightSystem;
 //outside of namespace for same method
 //for compiling method
-auto setup() -> void {SmartLightSystem.setup();};
-
-auto loop() -> void {SmartLightSystem.loop();};
+void setup() {SmartLightSystem.setup();};
+void loop() {SmartLightSystem.loop();};
