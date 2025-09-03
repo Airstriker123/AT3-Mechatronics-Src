@@ -55,7 +55,7 @@ BEGIN LightSensor
 END LightSensor
 */
         {
-            try {
+            try { //use exceptions for this block of code incase of error
                 if (const int LightLevel = analogRead(PhotoResistorpin); LightLevel > 150){
                     // condition for light detection
                     Serial.print("Sensor is detecting light!");
@@ -66,7 +66,7 @@ END LightSensor
                 return Light = false;
                 // Wait for 1 second before the next loop iteration
             }
-            catch (...) {
+            catch (...) { //catch any error
                 // incase sensor fails to notify me to fix it!
                 Serial.println("Light Sensor could not be detected");
                 return LightSensorStateOn = false; //flag for deciding if smartlight should proceed
@@ -160,14 +160,12 @@ END setup
             }
         }
 
-
-
         void loop()
         /*
 \\ process to perform real time checks if any change in environment
 BEGIN loop
     IF StartSmartLight = True THEN \\ only start if all sensors work
-       IF MOTION AND LIGHT = True THEN
+       IF Motion AND Light = True THEN
           write " LED light on!"
           LEDLight = On
        ELSE
@@ -182,7 +180,7 @@ END Loop
             if (StartSmartLight == true) { //only start if sensors work
                 Light = LightSensor();
                 Motion = MotionSensor();
-                if (Light == true && Motion == true ) { //check if both sensors are detecting
+                if (Light == false && Motion == true ) { //check if both sensors are detecting
                     //turn light on if they are
                     Serial.println("LED light on!");
                     digitalWrite(LedPin, HIGH);
