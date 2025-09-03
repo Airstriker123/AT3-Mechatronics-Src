@@ -6,7 +6,7 @@ namespace SmartLight
     {
 
     public:
-
+        
         //class public variables to declare type
         bool LEDLight;
         double LightLevel;
