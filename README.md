@@ -1,1 +1,4 @@
-```Hope my board does not explode :(```
+```
+Final project using platformio 
+ino file located in src
+```
