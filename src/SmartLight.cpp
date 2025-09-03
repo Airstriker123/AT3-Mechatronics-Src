@@ -8,25 +8,27 @@ namespace SmartLight
     public:
 
         //class public variables to declare type
+        // booleon values which will be determined by functions which will return bool/float
         bool LEDLight;
         double LightLevel;
         bool Light;
         bool LightSensorStateOn;
         bool StartSmartLight;
-        int LedPin;
+        // pins constant soo they cannot be changed
+        const int LedPin;
         const int PhotoResistorPin;
 
 
-        SmartLight()
-           : PhotoResistorPin(A2)
+        SmartLight() // constructor -> __init__ in python to assign values to class + pin and default bool assign
+           : PhotoResistorPin(A2),
+             LedPin(D7)
         {
-            LedPin = D7;
+            // starter values each time class is called (for safety)
             StartSmartLight = false;
             LightSensorStateOn = true;
             LEDLight = false;
             LightLevel = 0.0;
             Light = false;
-            Motionstate = 0;
         }
 
 
@@ -48,15 +50,16 @@ BEGIN LightSensor
 END LightSensor
 */
         {
-            LightLevel = analogRead(PhotoResistorPin);
-            if (LightLevel > 150) {
+            LightLevel = analogRead(PhotoResistorPin); //get light level from pin reading
+            if (LightLevel > 150)
+            {
+                // let light = true if reading above 150
                 Serial.println("Sensor is detecting light!");
                 return Light = true;
             }
-            else {
+            //otherwise return false if light < 150
                 Serial.println("No light detected");
                 return Light = false;
-            }
         }
 
 
@@ -100,7 +103,9 @@ END setup
             LightSensor();
 
 
-            if (LightSensorStateOn) {
+            if (LightSensorStateOn)
+                // check if sensor is on and then continue with loop (for debugging purposes)
+            {
                 Serial.println("Light Sensor is ON!");
                 return StartSmartLight = true;
             }
@@ -124,13 +129,17 @@ BEGIN loop
 END Loop
 */
         {
-            if (StartSmartLight) {
+            if (StartSmartLight)
+            {
+                // get light from returned booleon from LightSensor function
                 Light = LightSensor();
 
-                if (Light == false) {
+                if (Light == false)
+                { //if return false (no light detection turn led on)
                     Serial.println("LED ON");
                     digitalWrite(LedPin, HIGH);
-                } else {
+                } else
+                { //otherwise
                     Serial.println("LED OFF");
                     digitalWrite(LedPin, LOW);
                 }
@@ -140,8 +149,8 @@ END Loop
     };
 };
 
-SmartLight::SmartLight SmartLightSystem;
+SmartLight::SmartLight SmartLightSystem; //create a new instance named SmartLightSystem from class SmartLight to use the namespace
 //outside of namespace for same method
 //for compiling method
-void setup() {SmartLightSystem.setup();};
-void loop() {SmartLightSystem.loop();};
+void setup() {SmartLightSystem.setup();}; //get class method setup (execute once until reset)
+void loop() {SmartLightSystem.loop();}; //get class method loop (repeat each millisecond)
