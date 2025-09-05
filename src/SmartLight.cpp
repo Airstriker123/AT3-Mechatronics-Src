@@ -8,22 +8,19 @@ namespace SmartLight
     public:
 
         //class public variables to declare type
-        // booleon values which will be determined by functions which will return bool/float
         bool LEDLight;
         double LightLevel;
         bool Light;
         bool LightSensorStateOn;
         bool StartSmartLight;
-        // pins constant soo they cannot be changed
-        const int LedPin;
+        int LedPin;
         const int PhotoResistorPin;
 
 
-        SmartLight() // constructor -> __init__ in python to assign values to class + pin and default bool assign
-           : PhotoResistorPin(A2),
-             LedPin(D7)
+        SmartLight()
+           : PhotoResistorPin(A2)
         {
-            // starter values each time class is called (for safety)
+            LedPin = D7;
             StartSmartLight = false;
             LightSensorStateOn = true;
             LEDLight = false;
@@ -50,16 +47,15 @@ BEGIN LightSensor
 END LightSensor
 */
         {
-            LightLevel = analogRead(PhotoResistorPin); //get light level from pin reading
-            if (LightLevel > 150)
-            {
-                // let light = true if reading above 150
+            LightLevel = analogRead(PhotoResistorPin);
+            if (LightLevel > 150) {
                 Serial.println("Sensor is detecting light!");
                 return Light = true;
             }
-            //otherwise return false if light < 150
+            else {
                 Serial.println("No light detected");
                 return Light = false;
+            }
         }
 
 
@@ -67,15 +63,25 @@ END LightSensor
         /*
 \\ Ardunio setup process only executes once
 BEGIN setup
-     \\ safety checks to check if product sensor are working
+     \\ safety checks to check if product sensors are working
+     READ MotionSensorStatus FROM sensor
      READ LightSensorStatus FROM sensor
-     IF LightSensorStatus = True THEN
+
+     IF MotionSensorStatus = True THEN
          Sensor1 = True
+         write "Motion sensor detected!"
+     ELSE
+         write "Motion sensor not detected!"
+     ENDIF
+
+     IF LightSensorStatus = True THEN
+         Sensor2 = True
          write "Light sensor detected!"
      ELSE
          write "Light sensor not detected!"
      ENDIF
-     IF Sensor1  = True THEN
+
+     IF Sensor1 AND Sensor2 = True THEN
          RETURN  StartSmartLight = True
          write "Smart Light is now active!"
      ENDIF
@@ -93,9 +99,7 @@ END setup
             LightSensor();
 
 
-            if (LightSensorStateOn)
-                // check if sensor is on and then continue with loop (for debugging purposes)
-            {
+            if (LightSensorStateOn) {
                 Serial.println("Light Sensor is ON!");
                 return StartSmartLight = true;
             }
@@ -119,17 +123,13 @@ BEGIN loop
 END Loop
 */
         {
-            if (StartSmartLight)
-            {
-                // get light from returned booleon from LightSensor function
+            if (StartSmartLight) {
                 Light = LightSensor();
 
-                if (Light == false)
-                { //if return false (no light detection turn led on)
+                if (Light == false) {
                     Serial.println("LED ON");
                     digitalWrite(LedPin, HIGH);
-                } else
-                { //otherwise
+                } else {
                     Serial.println("LED OFF");
                     digitalWrite(LedPin, LOW);
                 }
@@ -139,8 +139,8 @@ END Loop
     };
 };
 
-SmartLight::SmartLight SmartLightSystem; //create a new instance named SmartLightSystem from class SmartLight to use the namespace
+SmartLight::SmartLight SmartLightSystem;
 //outside of namespace for same method
 //for compiling method
-void setup() {SmartLightSystem.setup();}; //get class method setup (execute once until reset)
-void loop() {SmartLightSystem.loop();}; //get class method loop (repeat each millisecond)
+void setup() {SmartLightSystem.setup();};
+void loop() {SmartLightSystem.loop();};

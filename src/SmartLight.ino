@@ -1,3 +1,6 @@
+
+#include <Arduino.h> //platformio needs this headerfile (for setup and loop pre functions)
+
 namespace SmartLight
 {
     class SmartLight
